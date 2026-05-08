@@ -1,0 +1,50 @@
+# Obsidian Day Planner 모바일 이슈 해결 계획
+
+## 목표
+모바일에서의 핵심 사용 흐름을 안정화한다.
+
+- [x] Dataview가 이미 활성화되어 있어도 "You need to install and enable Dataview" 경고가 뜨는 문제를 제거한다.
+- [x] 드래그/드롭 중 아래쪽 시간대로 이동할 때 자동 스크롤이 동작하도록 수정한다.
+- [x] All day events 영역에서 항목이 드래그되지 않는 문제를 수정한다.
+- [x] 완료 처리한 항목이 즉시 완료 상태로 반영되도록 동기화 문제를 수정한다.
+
+## 작업 순서
+
+### 1. All Day Events 드래그 불가 수정
+- [x] 관련 파일 확인: `src/ui/actions/gestures.ts`, `src/ui/components/timeline.svelte`, `src/ui/components/multi-day/*`, `src/ui/components/scroller.svelte`
+- [x] all day events 영역에서 드래그 시작이 막히는 정확한 원인을 먼저 확인한다.
+- [x] all day event 개별 항목이 선택되지 않고 drag handle 이 상시 노출되는 원인을 확인한다.
+- [x] 모바일 터치 드래그와 데스크톱 포인터 드래그가 각각 어디서 끊기는지 분리해서 확인한다.
+- [x] all day events 섹션의 resize handle 이 모바일 터치 입력도 받도록 수정한다.
+- [x] all day event 블록 선택의 `tap/longpress` 판정을 `TinyGesture` 대신 pointer 기반으로 안정화한다.
+- [x] 드래그 진입 시 all day 영역과 타임라인 영역의 hit-test, pointer capture, scroll lock 충돌을 점검한다.
+- [x] 필요한 경우 all day 영역에 대한 drag handle 또는 gesture 우선순위를 조정한다.
+- [x] 모바일과 데스크톱에서 all day 이벤트 드래그가 모두 유지되는지 검증한다.
+
+### 2. Dataview 감지 로직 점검
+- [x] 관련 파일 확인: `src/util/dataview.ts`, `src/service/dataview-facade.ts`, `src/ui/hooks/use-visible-dataview-tasks.ts`, `src/tasks-plugin.ts`
+- [x] 모바일에서 Dataview가 "없다"고 판정되는 경로를 추적한다.
+- [x] Obsidian 모바일의 초기화 타이밍 때문에 생기는 레이스 컨디션이 있는지 확인한다.
+- [x] 필요하면 감지 시점을 늦추거나, 실제 플러그인 활성화 여부를 더 안정적으로 확인하는 방식으로 바꾼다.
+- [x] 경고 문구가 한 번 잘못 표시된 뒤 계속 유지되는지까지 함께 확인한다.
+
+### 3. 완료 상태 반영 지연 수정
+- [x] 관련 파일 확인: `src/redux/tracker/tracker-slice.ts`, `src/create-update-handler.ts`, `src/ui/hooks/use-edit/*`, `src/util/task-utils.ts`
+- [x] 완료 처리 후 저장/인덱싱/리렌더 순서에서 지연이 생기는 지점을 찾는다.
+- [x] 로컬 상태는 바뀌었는데 metadata cache 또는 index가 늦게 갱신되는 구조인지 확인한다.
+- [x] 완료 체크 직후 UI가 바로 재평가되도록 optimistic update 또는 재인덱싱 트리거를 조정한다.
+- [x] 완료 표시가 늦게 바뀌는 케이스와 중복 갱신 케이스를 함께 막는다.
+
+## 검증 기준
+
+- [x] 모바일 앱 시작 직후 Dataview 경고가 불필요하게 뜨지 않는다.
+- [x] 드래그 중 아래쪽으로 이동하면 자동 스크롤이 정상 동작한다.
+- [x] 완료 처리 직후 상태가 즉시 완료로 보이며, 새로고침 없이도 반영된다.
+- [x] 기존 데스크톱 동작은 유지된다.
+- [x] All day events 영역의 항목도 드래그 가능해야 한다.
+
+## 확인 방법
+
+- [x] 모바일 환경 또는 모바일 에뮬레이션에서 수동 재현 테스트를 한다.
+- [x] 관련 단위 테스트가 있으면 보강하고, 없으면 최소한 회귀 방지 포인트를 남긴다.
+- [x] 수정 후 `npm run lint` 와 `npm run test` 범위에서 깨지는지 확인한다.
