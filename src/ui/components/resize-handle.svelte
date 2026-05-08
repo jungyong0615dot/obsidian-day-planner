@@ -6,10 +6,12 @@
   style:display={visible ? "block" : "none"}
   class="workspace-leaf-resize-handle"
   on:mousedown
+  on:touchstart
 />
 
 <style>
   :not(#dummy).workspace-leaf-resize-handle {
+    touch-action: none;
     cursor: row-resize;
 
     right: 0;

@@ -1,6 +1,7 @@
 import { uniqBy } from "lodash/fp";
 import { DateTime } from "luxon";
 import type { Moment } from "moment";
+import type { App } from "obsidian";
 import { STask } from "obsidian-dataview";
 import { isNotVoid } from "typed-assert";
 
@@ -194,6 +195,11 @@ export function replaceSTaskText(
 export const uniq = uniqBy(
   (task: STask) => `${task.path}::${task.position.start.line}`,
 );
+
+export function hasDataviewPlugin(app: App) {
+  // @ts-expect-error Obsidian does not type the internal plugin registry.
+  return Boolean(app.plugins.plugins["obsidian-dataview"]);
+}
 
 export const baseSTask: STask = {
   symbol: "-",

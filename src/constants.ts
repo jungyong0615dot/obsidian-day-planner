@@ -29,6 +29,8 @@ export const reQueryAfterMillis = 100;
 export const undoTimeoutMillis = 8000;
 export const vibrationDurationMillis = 100;
 export const transitionDurationShort = 150;
+export const touchLongPressTimeMillis = 500;
+export const touchPressThresholdPixels = 8;
 
 export const icalParseLowerLimit = 10;
 

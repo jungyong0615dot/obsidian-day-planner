@@ -10,6 +10,7 @@
   import FloatingControls from "./floating-controls.svelte";
   import ResizeControls from "./resize-controls.svelte";
   import Selectable from "./selectable.svelte";
+  import { shouldShowTimeBlockControls } from "./time-block-controls-state";
 
   interface TimeBlockProps {
     isActive: boolean;
@@ -38,7 +39,7 @@
   selectionBlocked={Boolean($editOperation)}
 >
   {#snippet children(selectable)}
-    <FloatingControls active={selectable.state === "primary"}>
+    <FloatingControls active={shouldShowTimeBlockControls(selectable.state)}>
       {#snippet anchor(floatingControls)}
         {@render timeBlock({
           isActive: selectable.state !== "none",

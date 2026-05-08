@@ -15,7 +15,11 @@ import type { ListPropsParser } from "../service/list-props-parser";
 import type { PointerDateTime, ReduxExtraArgument } from "../types";
 import { getUpdateTrigger } from "../util/store";
 
-import { dataviewSlice, selectDataviewLoaded } from "./dataview/dataview-slice";
+import {
+  dataviewChange,
+  dataviewSlice,
+  selectDataviewLoaded,
+} from "./dataview/dataview-slice";
 import { editCanceled, globalSlice } from "./global-slice";
 import { icalSlice, selectRemoteTasks } from "./ical/ical-slice";
 import { initListenerMiddleware } from "./listener-middleware";
@@ -84,7 +88,7 @@ export function createReactor(props: {
   const dataviewLoaded = useSelector(selectDataviewLoaded);
   const dataviewSource = useSelector(selectDataviewSource);
 
-  const isDataviewRefreshSignal = isAnyOf(editCanceled);
+  const isDataviewRefreshSignal = isAnyOf(editCanceled, dataviewChange);
   const dataviewRefreshSignal = derived(
     actionDispatched,
     ($actionDispatched, set) => {

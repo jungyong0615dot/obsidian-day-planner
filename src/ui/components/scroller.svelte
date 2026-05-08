@@ -24,6 +24,23 @@
     editContext: { editOperation },
   } = getObsidianContext();
 
+  function handleAutoScroll(event: PointerEvent | MouseEvent | TouchEvent) {
+    if (!$editOperation || !el) {
+      stopScroll();
+      return;
+    }
+
+    const scrollZones = getScrollZones(event, el);
+
+    if (scrollZones.isInTopScrollZone) {
+      startScroll({ el, direction: "up" });
+    } else if (scrollZones.isInBottomScrollZone) {
+      startScroll({ el, direction: "down" });
+    } else {
+      stopScroll();
+    }
+  }
+
   function blockPanOnEdit(el: HTMLElement) {
     const off = on(el, "touchmove", (event) => {
       if ($editOperation) {
@@ -49,26 +66,26 @@
     isUnderCursor = false;
   }}
   onpointerleave={stopScroll}
-  onpointermove={(event) => {
-    if (!$editOperation || !el) {
-      return;
-    }
-
-    const scrollZones = getScrollZones(event, el);
-
-    if (scrollZones.isInTopScrollZone) {
-      startScroll({ el, direction: "up" });
-    } else if (scrollZones.isInBottomScrollZone) {
-      startScroll({ el, direction: "down" });
-    } else {
-      stopScroll();
-    }
-  }}
+  onpointermove={handleAutoScroll}
   {onscroll}
   use:blockPanOnEdit
 >
   {@render children(isUnderCursor)}
 </div>
+
+<svelte:document
+  on:touchmove={(event) => {
+    if (!$editOperation) {
+      return;
+    }
+
+    event.preventDefault();
+    handleAutoScroll(event);
+  }}
+  on:touchend={stopScroll}
+  on:touchcancel={stopScroll}
+  on:pointerup={stopScroll}
+/>
 
 <style>
   .scroller {

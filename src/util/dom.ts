@@ -15,13 +15,16 @@ export function isTouchEvent(event: PointerEvent) {
 export function getIsomorphicClientY(
   event: PointerEvent | MouseEvent | TouchEvent,
 ) {
-  if (event instanceof PointerEvent || event instanceof MouseEvent) {
+  if (
+    (typeof PointerEvent !== "undefined" && event instanceof PointerEvent) ||
+    event instanceof MouseEvent
+  ) {
     return event.clientY;
   }
 
   const firstTouch = event.touches[0];
 
-  return firstTouch.pageY;
+  return firstTouch.clientY;
 }
 
 export function isEventRelated(
@@ -83,7 +86,7 @@ export function getDarkModeFlag() {
 
 export function getPointerOffsetY(
   el: HTMLElement,
-  event: MouseEvent | TouchEvent,
+  event: PointerEvent | MouseEvent | TouchEvent,
 ) {
   const viewportToElOffsetY = el.getBoundingClientRect().top;
 
@@ -91,7 +94,7 @@ export function getPointerOffsetY(
 }
 
 export function getScrollZones(
-  event: MouseEvent | TouchEvent,
+  event: PointerEvent | MouseEvent | TouchEvent,
   el: HTMLElement,
 ) {
   const pointerOffsetY = getPointerOffsetY(el, event);
@@ -110,16 +113,24 @@ type ScrollProps = { el: HTMLElement; direction: ScrollDirection };
 
 export function createAutoScroll() {
   let scrolling = false;
+  let scrollDirection: ScrollDirection | undefined;
+  let scrollToken = 0;
 
   function stopScroll() {
     scrolling = false;
+    scrollDirection = undefined;
+    scrollToken += 1;
   }
 
-  function scroll(props: ScrollProps) {
+  function scroll(props: ScrollProps, token: number) {
     const { el, direction } = props;
 
     requestAnimationFrame(() => {
-      if (!scrolling) {
+      if (
+        !scrolling ||
+        token !== scrollToken ||
+        scrollDirection !== direction
+      ) {
         return;
       }
 
@@ -129,18 +140,20 @@ export function createAutoScroll() {
         el.scrollTop += scrollSpeedPixelsPerAnimationFrame;
       }
 
-      scroll(props);
+      scroll(props, token);
     });
   }
 
   function startScroll(props: ScrollProps) {
-    if (scrolling) {
+    if (scrolling && scrollDirection === props.direction) {
       return;
     }
 
     scrolling = true;
+    scrollDirection = props.direction;
+    scrollToken += 1;
 
-    scroll(props);
+    scroll(props, scrollToken);
   }
 
   return { startScroll, stopScroll };

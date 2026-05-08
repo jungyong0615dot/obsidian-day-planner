@@ -67,6 +67,7 @@ import { createUndoNotice } from "./ui/undo-notice";
 import { createEnvironmentHooks } from "./util/create-environment-hooks";
 import { createRenderMarkdown } from "./util/create-render-markdown";
 import { createShowPreview } from "./util/create-show-preview";
+import { hasDataviewPlugin } from "./util/dataview";
 import { notifyAboutStartedTasks } from "./util/notify-about-started-tasks";
 
 export default class DayPlanner extends Plugin {
@@ -115,6 +116,11 @@ export default class DayPlanner extends Plugin {
       pointerDateTime,
       dataviewRefreshSignal,
     } = createReactor({
+      preloadedState: {
+        dataview: {
+          dataviewLoaded: hasDataviewPlugin(this.app),
+        },
+      },
       listPropsParser,
       vault,
       metadataCache,
@@ -144,6 +150,25 @@ export default class DayPlanner extends Plugin {
       useSelector,
       useSelectorV2,
     });
+
+    const syncDataviewLoaded = () => {
+      if (!hasDataviewPlugin(this.app)) {
+        return false;
+      }
+
+      dispatch(dataviewChange("__dataview_loaded__"));
+      return true;
+    };
+
+    if (!syncDataviewLoaded()) {
+      const intervalId = window.setInterval(() => {
+        if (syncDataviewLoaded()) {
+          window.clearInterval(intervalId);
+        }
+      }, 100);
+
+      this.registerInterval(intervalId);
+    }
 
     const handleEditorMenu = createEditorMenuCallback({
       taskEntryEditor: this.taskEntryEditor,

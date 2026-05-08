@@ -93,7 +93,7 @@
                 {/snippet}
               </BlockList>
             {/if}
-            <ResizeHandle on:mousedown={startEdit} />
+            <ResizeHandle on:mousedown={startEdit} on:touchstart={startEdit} />
           {/snippet}
         </ResizeableBox>
       {/if}
