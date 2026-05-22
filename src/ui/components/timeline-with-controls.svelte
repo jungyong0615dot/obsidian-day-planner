@@ -20,6 +20,7 @@
   import ResizeableBox from "./resizeable-box.svelte";
   import Ruler from "./ruler.svelte";
   import Scroller from "./scroller.svelte";
+  import TaskSourceDecoration from "./task-source-decoration.svelte";
   import TimelineControls from "./timeline-controls.svelte";
   import Timeline from "./timeline.svelte";
   import UnscheduledTimeBlock from "./unscheduled-time-block.svelte";
@@ -89,7 +90,11 @@
                   <UnscheduledTimeBlock
                     --time-block-padding="var(--size-2-1) 0"
                     {task}
-                  />
+                  >
+                    {#snippet bottomDecoration()}
+                      <TaskSourceDecoration {task} />
+                    {/snippet}
+                  </UnscheduledTimeBlock>
                 {/snippet}
               </BlockList>
             {/if}

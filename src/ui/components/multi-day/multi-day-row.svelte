@@ -6,6 +6,7 @@
   import type { Task, WithTime } from "../../../task-types";
   import { isLocal, type RemoteTask } from "../../../task-types";
   import * as t from "../../../util/task-utils";
+  import TaskSourceDecoration from "../task-source-decoration.svelte";
   import UnscheduledTimeBlock from "../unscheduled-time-block.svelte";
 
   const { editContext } = getObsidianContext();
@@ -54,7 +55,11 @@
     <UnscheduledTimeBlock
       --time-block-grid-column="{getColumnIndex(task)} / span {getSpan(task)}"
       {task}
-    />
+    >
+      {#snippet bottomDecoration()}
+        <TaskSourceDecoration {task} />
+      {/snippet}
+    </UnscheduledTimeBlock>
   {/each}
 </div>
 

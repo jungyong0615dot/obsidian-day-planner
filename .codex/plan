@@ -48,3 +48,36 @@
 - [x] 모바일 환경 또는 모바일 에뮬레이션에서 수동 재현 테스트를 한다.
 - [x] 관련 단위 테스트가 있으면 보강하고, 없으면 최소한 회귀 방지 포인트를 남긴다.
 - [x] 수정 후 `npm run lint` 와 `npm run test` 범위에서 깨지는지 확인한다.
+
+## 추가 작업: All day events 파일 출처 표시 일관화
+
+- [x] all-day task의 파일 출처 표시가 데스크톱 멀티데이 row와 모바일/사이드바 all-day list 모두에 같은 방식으로 렌더링되도록 수정한다.
+- [x] 기존 all-day 기간 축약 표시가 유지되는지 확인한다.
+- [x] 관련 타입체크/테스트를 실행한다.
+
+## 추가 작업: All day events 파일 출처 표시 compact overlay
+
+- [x] all-day 파일 출처 표시를 한 줄을 추가로 차지하지 않는 overlay badge로 바꾼다.
+- [x] task 본문과 badge가 겹치지 않도록 최소 padding/ellipsis 처리를 조정한다.
+- [x] 관련 타입체크/테스트를 실행하고 테스트 vault에 다시 설치한다.
+
+## 추가 작업: All day events overlay badge 왼쪽 글자 clipping 수정
+
+- [x] first-line wrapper의 왼쪽 글자가 잘리는 원인이 되는 overflow/nowrap 처리를 제거한다.
+- [x] badge와 본문이 겹치지 않는 오른쪽 여백은 유지한다.
+- [x] 관련 lint/test/build를 실행하고 테스트 vault에 다시 설치한다.
+
+## 추가 작업: Timeline 파일 출처 표시
+
+- [x] Timeline item에서 task 파일 출처 정보가 어디서 렌더링되는지 확인한다.
+- [x] All day events의 파일명 표시 방식과 맞춰 Timeline item에도 파일명을 표시한다.
+- [x] Timeline item 본문과 파일명 badge가 겹치지 않도록 레이아웃/ellipsis 처리를 확인한다.
+- [x] 관련 타입체크/테스트를 실행한다.
+
+## 추가 작업: 테스트 vault 설치
+
+- [x] MacBook Pro와 Termux 환경의 prod/test vault 경로를 `AGENTS.md`에 명확히 구분해 적는다.
+- [x] 현재 실행 환경이 MacBook Pro인지 Termux/Android인지 구분하는 기준을 `AGENTS.md`에 적는다.
+- [x] 최신 변경사항을 production build로 생성한다.
+- [x] 빌드 산출물을 테스트 vault 플러그인 경로에 복사한다.
+- [x] 테스트 vault에 설치된 파일을 확인한다.

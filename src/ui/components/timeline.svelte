@@ -24,6 +24,7 @@
   import LocalTimeBlock from "./local-time-block.svelte";
   import Needle from "./needle.svelte";
   import PositionedTimeBlock from "./positioned-time-block.svelte";
+  import TaskSourceDecoration from "./task-source-decoration.svelte";
   import UnscheduledTimeBlock from "./unscheduled-time-block.svelte";
 
   const {
@@ -122,6 +123,7 @@
         <PositionedTimeBlock {task}>
           <UnscheduledTimeBlock {task}>
             {#snippet bottomDecoration()}
+              <TaskSourceDecoration {task} />
               {getBlockProps(task, settingsSignal.current)}
             {/snippet}
           </UnscheduledTimeBlock>
